@@ -1,5 +1,8 @@
 package net.eldiosantos.tools.context;
 
+import net.eldiosantos.tools.config.exception.BuilderNamingException;
+import net.eldiosantos.tools.config.factory.ContextBuilder;
+
 import javax.naming.Context;
 import javax.naming.NameAlreadyBoundException;
 import javax.naming.NamingException;
@@ -18,7 +21,11 @@ public class CustomContextFactory implements InitialContextFactory {
     @Override
     public Context getInitialContext(Hashtable<?, ?> environment) throws NamingException {
         if(context == null) {
-            context = new HashMap<>();
+            try {
+                context = new ContextBuilder().build();
+            } catch (Exception e) {
+                throw new BuilderNamingException("Error building context.", e);
+            }
         }
         return new CustomContext(this);
     }

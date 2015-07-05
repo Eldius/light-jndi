@@ -4,76 +4,77 @@ import net.eldiosantos.tools.naming.CustomNamingEnumeration;
 
 import javax.naming.*;
 import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * Created by Eldius on 05/07/2015.
  */
 public class CustomContext implements Context {
 
-    private final CustomContextFactory factory;
+    private final ContextHandler handler;
 
-    public CustomContext(CustomContextFactory factory) {
-        this.factory = factory;
+    public CustomContext(ContextHandler factory) {
+        this.handler = factory;
     }
 
     @Override
     public Object lookup(Name name) throws NamingException {
-        return factory.lookup(name.toString());
+        return handler.lookup(name.toString());
     }
 
     @Override
     public Object lookup(String name) throws NamingException {
-        return factory.lookup(name);
+        return handler.lookup(name);
     }
 
     @Override
     public void bind(Name name, Object obj) throws NamingException {
-        factory.bind(name.toString(), obj);
+        handler.bind(name.toString(), obj);
     }
 
     @Override
     public void bind(String name, Object obj) throws NamingException {
-        factory.bind(name, obj);
+        handler.bind(name, obj);
     }
 
     @Override
     public void rebind(Name name, Object obj) throws NamingException {
-        factory.bind(name.toString(), obj);
+        handler.bind(name.toString(), obj);
     }
 
     @Override
     public void rebind(String name, Object obj) throws NamingException {
-        factory.rebind(name, obj);
+        handler.rebind(name, obj);
     }
 
     @Override
     public void unbind(Name name) throws NamingException {
-        factory.unbind(name.toString());
+        handler.unbind(name.toString());
     }
 
     @Override
     public void unbind(String name) throws NamingException {
-        factory.unbind(name);
+        handler.unbind(name);
     }
 
     @Override
     public void rename(Name oldName, Name newName) throws NamingException {
-        factory.rename(oldName.toString(), newName.toString());
+        handler.rename(oldName.toString(), newName.toString());
     }
 
     @Override
     public void rename(String oldName, String newName) throws NamingException {
-        factory.rename(oldName, newName);
+        handler.rename(oldName, newName);
     }
 
     @Override
     public NamingEnumeration<NameClassPair> list(Name name) throws NamingException {
-        return new CustomNamingEnumeration(factory.getContext());
+        return new CustomNamingEnumeration((Map) handler.lookup(name.toString()));
     }
 
     @Override
     public NamingEnumeration<NameClassPair> list(String name) throws NamingException {
-        return null;
+        return new CustomNamingEnumeration((Map) handler.lookup(name));
     }
 
     @Override
