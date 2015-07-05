@@ -1,0 +1,7 @@
+
+The Basics:
+http://docs.oracle.com/javase/jndi/tutorial/basics/index.html
+
+Beyond the Basics:
+http://docs.oracle.com/javase/jndi/tutorial/beyond/index.html
+
