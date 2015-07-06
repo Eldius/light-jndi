@@ -1,4 +1,4 @@
-package net.eldiosantos.tools.config;
+package net.eldiosantos.tools.context;
 
 import net.eldiosantos.tools.config.helper.JarExtractor;
 import net.eldiosantos.tools.config.helper.ListFiles;
@@ -46,6 +46,7 @@ public class RootConfigPath {
     }
 
     private File[] getFiles(final String dir) {
-        return new ListFiles().list(dir);
+        final File[] files = new ListFiles().list(dir);
+        return files!=null?files:new File[0];
     }
 }

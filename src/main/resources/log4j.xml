@@ -43,7 +43,7 @@
     </category>
 
     <root>
-        <priority value="info"/>
+        <priority value="debug"/>
         <appender-ref ref="stdout"/>
         <appender-ref ref="file"/>
     </root>

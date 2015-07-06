@@ -1,5 +1,8 @@
 package net.eldiosantos.tools.context;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.naming.NameAlreadyBoundException;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +11,8 @@ import java.util.Map;
  * Created by Eldius on 05/07/2015.
  */
 public class ContextHandler {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final Map<Object, Object> context = new HashMap<>();
 
@@ -33,6 +38,7 @@ public class ContextHandler {
     }
 
     private Object bind(final String name, final Map<Object,Object> map, final Object value, final Boolean replace) throws NameAlreadyBoundException {
+        logger.debug(String.format("binding name '%s'", name));
         final String[] split = name.split("/");
         if(split.length > 1) {
             Object subContext = map.get(split[0]);
