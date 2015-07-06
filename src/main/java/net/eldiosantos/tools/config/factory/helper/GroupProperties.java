@@ -17,30 +17,23 @@ public class GroupProperties {
 
     public Map<String, Map<String, String>>group(final Set<Map.Entry<String, String>> props) {
 
-        String lastPath = "";
         final Map<String, Map<String, String>>map = new HashMap<>();
 
         // TODO Improve this code
         for(Map.Entry<String, String> entry: props) {
-            logger.debug(String.format("Parsing property key '%s' with value '%s'", entry.getKey(), entry.getValue()));
-            final String key = entry.getKey().toString();
-            final String[] propPathSplit = key.split("/");
-            final String objectPropertyName = propPathSplit[propPathSplit.length - 1];
+            final String[] tmpPath = entry.getKey().split("/");
+            final String[] tmpObjectProps = tmpPath[tmpPath.length - 1].split("\\.");
+            final String propName = tmpObjectProps[1];
+            final String objName = tmpObjectProps[0];
+            final String path = entry.getKey().substring(0, entry.getKey().length() - (tmpPath[tmpPath.length - 1].length() + 1));
+            final String objectIdentification = path + "/" + objName;
 
-            logger.debug(String.format("objectPropertyName: %s", objectPropertyName));
-            final String[] objectPropertyNameSplit = objectPropertyName.split("\\.");
-            logger.debug(String.format("objectPropertyNameSplit length: %d", objectPropertyNameSplit.length));
-            final String objectName = objectPropertyNameSplit[0];
-            final String propertyName = objectPropertyNameSplit[1];
-
-            final String path = key.replace("/" + propertyName, "");
-            final String objectIdentification = path + objectName;
-            Map<String, String> aux = map.get(objectIdentification);
-            if(aux == null) {
-                aux = new HashMap<>();
-                map.put(objectIdentification, aux);
+            Map<String, String> objectProperties = map.get(objectIdentification);
+            if(objectProperties == null) {
+                objectProperties = new HashMap<>();
+                map.put(objectIdentification, objectProperties);
             }
-            aux.put(propertyName, entry.getValue());
+            objectProperties.put(propName, entry.getValue());
         }
 
         return map;

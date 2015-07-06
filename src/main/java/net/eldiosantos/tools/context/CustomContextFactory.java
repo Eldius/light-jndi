@@ -26,6 +26,6 @@ public class CustomContextFactory implements InitialContextFactory {
                 throw new BuilderNamingException("Error building context.", e);
             }
         }
-        return new CustomContext(new ContextHandler());
+        return new CustomContext(context);
     }
 }

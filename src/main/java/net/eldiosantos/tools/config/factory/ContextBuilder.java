@@ -6,6 +6,7 @@ import net.eldiosantos.tools.config.factory.loader.PropertiesFileLoader;
 import net.eldiosantos.tools.constants.PropertyKeys;
 import net.eldiosantos.tools.context.ContextHandler;
 import net.eldiosantos.tools.context.RootConfigPath;
+import net.eldiosantos.tools.custom.CustomMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,19 +39,21 @@ public class ContextBuilder {
             configurationProperties.putAll(propertiesFileLoader.loadFile(cfg));
         }
 
-
         logger.debug("Properties:");
         for (Map.Entry<String, String>entry:configurationProperties.entrySet()) {
             logger.debug(String.format("Property: '%s' => '%s'", entry.getKey(), entry.getValue()));
         }
 
-        final ContextHandler contextHandler = new ContextHandler();
+        final ContextHandler contextHandler = new ContextHandler(new CustomMap());
         final Map<String, Map<String, String>> groupedMaps = new GroupProperties().group(configurationProperties.entrySet());
         final ObjectFactory objectFactory = new ObjectFactory();
         logger.debug("grouped props: \n" + groupedMaps.toString());
+        StringBuffer msg = new StringBuffer("Properties:\n");
         for(Map.Entry<String, Map<String, String>>objProps: groupedMaps.entrySet()) {
-            //contextHandler.bind(objProps.getKey(), objectFactory.build(objProps.getValue()));
+            contextHandler.bind(objProps.getKey(), objectFactory.build(objProps.getValue()));
         }
+
+        logger.debug(msg.toString());
 
         return contextHandler;
     }
