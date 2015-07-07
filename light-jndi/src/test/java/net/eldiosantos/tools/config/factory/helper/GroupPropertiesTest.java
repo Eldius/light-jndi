@@ -67,7 +67,7 @@ public class GroupPropertiesTest {
     @Test
     public void testGroupMultipleObjects2() throws Exception {
             final Map<String, String> props = new HashMap<>();
-        for (final File file:new RootConfigPath("src/main/resources/jndi").getFiles()) {
+        for (final File file:new RootConfigPath("src/test/resources/jndi").getFiles()) {
             props.putAll(new PropertiesFileLoader().loadFile(file));
         }
         final Map<String, Map<String, String>> group = new GroupProperties().group(props.entrySet());

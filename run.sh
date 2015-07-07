@@ -2,4 +2,5 @@
 
 clear
 mvn clean install && \
-java -jar target/light-jndi-jar-with-dependencies.jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+java -jar light-jndi-embedded-test/target/light-jndi-embedded-test-jar-with-dependencies.jar && \
+java -jar light-jndi-test/target/light-jndi-test-jar-with-dependencies.jar

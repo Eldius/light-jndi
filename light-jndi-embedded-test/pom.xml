@@ -17,6 +17,16 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <dependencies>
+      <dependency>
+          <groupId>net.eldiosantos.tools</groupId>
+          <artifactId>light-jndi</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>com.h2database</groupId>
+          <artifactId>h2</artifactId>
+          <version>1.3.175</version>
+      </dependency>
 
   </dependencies>
     <build>

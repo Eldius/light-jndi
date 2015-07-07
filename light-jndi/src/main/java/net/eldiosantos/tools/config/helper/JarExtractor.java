@@ -29,16 +29,18 @@ public class JarExtractor {
             if(entry.getName().startsWith(root)) {
                 logger.info(String.format("Extracting file %s", entry.getName()));
                 final File dest = new File(tempDir.getPath() + File.separator + entry.getName());
-                if(dest.isDirectory()) {
+                if(entry.isDirectory()) {
                     dest.mkdirs();
+                } else {
+                    final InputStream in = jar.getInputStream(entry);
+                    final OutputStream out = new FileOutputStream(dest);
+
+                    while (in.available() > 0) {
+                        out.write(in.read());
+                    }
+                    out.close();
+                    in.close();
                 }
-                final InputStream in = jar.getInputStream(entry);
-                final OutputStream out = new FileOutputStream(dest);
-                while(in.available() > 0) {
-                    out.write(in.read());
-                }
-                out.close();
-                in.close();
             }
         }
 

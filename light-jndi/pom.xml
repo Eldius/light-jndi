@@ -30,6 +30,7 @@
           <groupId>com.h2database</groupId>
           <artifactId>h2</artifactId>
           <version>1.4.181</version>
+          <scope>test</scope>
       </dependency>
       <dependency>
           <groupId>commons-dbcp</groupId>

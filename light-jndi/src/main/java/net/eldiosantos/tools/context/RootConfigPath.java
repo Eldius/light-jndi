@@ -29,7 +29,7 @@ public class RootConfigPath {
             final String parsedRoot = root.substring("classpath:".length());
             final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
             if(jarFile.isFile()) {
-                new JarExtractor().extract(jarFile, parsedRoot);
+                return new JarExtractor().extract(jarFile, parsedRoot);
              } else {
                 return getClass().getClassLoader().getResource(root).getFile();
             }
@@ -38,7 +38,6 @@ public class RootConfigPath {
         } else {
             return root;
         }
-        return "";
     }
 
     public File[] getFiles() throws Exception {
