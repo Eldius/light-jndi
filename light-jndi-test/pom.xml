@@ -4,13 +4,13 @@
   <parent>
     <groupId>net.eldiosantos.jndi</groupId>
     <artifactId>light-jndi-project</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2</version>
   </parent>
 
   <artifactId>light-jndi-test</artifactId>
   <name>light-jndi-test</name>
 
-  <url>http://maven.apache.org</url>
+  <url>https://bitbucket.org/Eldius/light-jndi</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -2,7 +2,7 @@
     <parent>
         <artifactId>light-jndi-project</artifactId>
         <groupId>net.eldiosantos.jndi</groupId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>0.0.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <name>light-jndi-customfactory-test</name>
-    <url>http://maven.apache.org</url>
+    <url>https://bitbucket.org/Eldius/light-jndi</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

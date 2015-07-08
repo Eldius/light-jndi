@@ -4,11 +4,11 @@
 
   <groupId>net.eldiosantos.jndi</groupId>
   <artifactId>light-jndi-project</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.2</version>
   <packaging>pom</packaging>
 
   <name>light-jndi-project</name>
-  <url>http://maven.apache.org</url>
+  <url>https://bitbucket.org/Eldius/light-jndi</url>
 
     <scm>
         <connection>scm:git:https://Eldius@bitbucket.org/Eldius/light-jndi.git</connection>

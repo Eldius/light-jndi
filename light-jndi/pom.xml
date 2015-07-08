@@ -4,14 +4,14 @@
   <parent>
 	<groupId>net.eldiosantos.jndi</groupId>
 	<artifactId>light-jndi-project</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.2</version>
   </parent>
 
   <artifactId>light-jndi</artifactId>
   <packaging>jar</packaging>
   <name>light-jndi</name>
 
-  <url>http://maven.apache.org</url>
+  <url>https://bitbucket.org/Eldius/light-jndi</url>
 
   <dependencies>
     <dependency>
