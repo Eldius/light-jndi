@@ -193,7 +193,7 @@
     <distributionManagement>
         <repository>
             <id>bintray-repo</id>
-            <url>https://api.bintray.com/maven/eldius/maven/net.eldiosantos.tools</url>
+            <url>https://api.bintray.com/maven/eldius/maven/net.eldiosantos.jndi</url>
         </repository>
     </distributionManagement>
 
