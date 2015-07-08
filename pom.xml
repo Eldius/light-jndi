@@ -25,6 +25,7 @@
 	<module>light-jndi</module>
     <module>light-jndi-test</module>
     <module>light-jndi-embedded-test</module>
+      <module>light-jndi-customfactory-test</module>
   </modules>
 
   <dependencies>

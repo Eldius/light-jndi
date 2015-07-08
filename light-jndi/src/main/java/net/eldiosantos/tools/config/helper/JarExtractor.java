@@ -22,6 +22,7 @@ public class JarExtractor {
         final JarFile jar = new JarFile(jarFile.getAbsoluteFile());
         final File tempDir = new File(File.createTempFile("context", "tmp").getParent() + File.separator + "context");
         tempDir.mkdirs();
+        cleanDir(tempDir);
 
         final Enumeration<JarEntry> entries = jar.entries();
         while (entries.hasMoreElements()) {
@@ -46,5 +47,15 @@ public class JarExtractor {
 
         return tempDir.getAbsolutePath() + File.separator + root;
 
+    }
+
+    private void cleanDir(final File dir) {
+        for(File f:dir.listFiles()) {
+            if(f.isDirectory()) {
+                cleanDir(f);
+            } else {
+                f.delete();
+            }
+        }
     }
 }
