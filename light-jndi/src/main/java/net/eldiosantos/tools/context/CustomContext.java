@@ -7,7 +7,11 @@ import java.util.Hashtable;
 import java.util.Map;
 
 /**
- * Created by Eldius on 05/07/2015.
+ * It's our context implementation itself. It relies
+ * on the ConetxtHandler to handle the context (and subcontexts).
+ * That's the class you will work when manipulating the context
+ * (basically the one you will need to know about -
+ * not about this implementation itself, but about the patterns).
  */
 public class CustomContext implements Context {
 

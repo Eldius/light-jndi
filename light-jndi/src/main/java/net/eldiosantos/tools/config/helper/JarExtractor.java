@@ -12,7 +12,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
- * Created by Eldius on 05/07/2015.
+ * Extracts the files from a jar file in case you use the root path
+ * starting with 'classpath:'.
  */
 public class JarExtractor {
 

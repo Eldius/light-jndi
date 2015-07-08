@@ -11,7 +11,8 @@ import java.util.Hashtable;
 import java.util.Map;
 
 /**
- * Created by Eldius on 05/07/2015.
+ * The context factory implementation. It needs to be set as the
+ * default context factory to work.
  */
 public class CustomContextFactory implements InitialContextFactory {
 

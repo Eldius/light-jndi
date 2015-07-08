@@ -9,7 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Eldius on 05/07/2015.
+ * The default factory for the objects who will be inserted in
+ * the context.
  */
 public class DefaultObjectFactory implements ObjectFactory {
 

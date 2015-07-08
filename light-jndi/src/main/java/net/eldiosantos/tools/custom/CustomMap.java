@@ -9,7 +9,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * Created by esjunior on 06/07/2015.
+ * A simple Map wrapper to know when we have a sub context.
  */
 public class CustomMap implements Map<String, Object> {
     private final Map<String, Object> map = new HashMap<>();

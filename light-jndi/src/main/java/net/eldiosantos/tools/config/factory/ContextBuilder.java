@@ -2,7 +2,6 @@ package net.eldiosantos.tools.config.factory;
 
 import net.eldiosantos.tools.config.factory.helper.GroupProperties;
 import net.eldiosantos.tools.config.factory.helper.ObjectFactoryLoader;
-import net.eldiosantos.tools.config.factory.helper.OrderProperties;
 import net.eldiosantos.tools.config.factory.impl.DatasourceObjectFactory;
 import net.eldiosantos.tools.config.factory.impl.DefaultObjectFactory;
 import net.eldiosantos.tools.config.factory.loader.PropertiesFileLoader;
@@ -17,7 +16,9 @@ import java.io.File;
 import java.util.*;
 
 /**
- * Created by Eldius on 05/07/2015.
+ * The main class of this project. It's responsible to
+ * start and configure the context. It manages the calls to others
+ * classes to setup the context.
  */
 public class ContextBuilder {
 
@@ -31,7 +32,6 @@ public class ContextBuilder {
         properties.load(getClass().getClassLoader().getResourceAsStream("jndi.properties"));
 
         System.getProperties().putAll(properties);
-        final List<Map.Entry<Object, Object>> orderedEntries = new OrderProperties().order(properties.entrySet());
 
         final File[] factoryFiles = new RootConfigPath(properties.getProperty(PropertyKeys.ROOT_PATH)).getFiles();
 

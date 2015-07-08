@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by Eldius on 05/07/2015.
+ * It groups the properties in maps. A map per object.
  */
 public class GroupProperties {
 

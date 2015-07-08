@@ -10,7 +10,7 @@ import javax.naming.NamingException;
 import java.util.Map;
 
 /**
- * Created by Eldius on 05/07/2015.
+ * The class who is responsible to find things into the context.
  */
 public class ContextHandler {
 

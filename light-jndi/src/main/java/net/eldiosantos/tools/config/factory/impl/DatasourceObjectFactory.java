@@ -7,7 +7,7 @@ import javax.sql.DataSource;
 import java.util.Map;
 
 /**
- * Created by esjunior on 06/07/2015.
+ * Class responsible to build the datasources.
  */
 public class DatasourceObjectFactory implements ObjectFactory {
 

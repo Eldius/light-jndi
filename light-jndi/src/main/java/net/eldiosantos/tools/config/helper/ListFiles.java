@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 /**
- * Created by Eldius on 05/07/2015.
+ * It's responsability is to list files on the configuration
+ * folder.
+ * At this time the only supported file type is the properties.
  */
 public class ListFiles {
     public File[] list(final String root) {

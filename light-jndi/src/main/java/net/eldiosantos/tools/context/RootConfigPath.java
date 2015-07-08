@@ -11,7 +11,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
- * Created by Eldius on 04/07/2015.
+ * Class used to help parse root folder configuration.
  */
 public class RootConfigPath {
 
