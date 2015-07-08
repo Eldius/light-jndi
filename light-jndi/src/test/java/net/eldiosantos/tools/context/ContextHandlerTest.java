@@ -1,6 +1,6 @@
 package net.eldiosantos.tools.context;
 
-import net.eldiosantos.tools.config.factory.ObjectFactory;
+import net.eldiosantos.tools.config.factory.impl.DefaultObjectFactory;
 import net.eldiosantos.tools.custom.CustomMap;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.After;
@@ -37,7 +37,7 @@ public class ContextHandlerTest {
         props.put("user", "user");
         props.put("password", "password");
 
-        final Object buildedObject = new ObjectFactory().build(props);
+        final Object buildedObject = new DefaultObjectFactory().build(props);
 
         ContextHandler contextHandler = new ContextHandler(new CustomMap());
         String name = "jdbc:/java/comp/env/myDatasource";
@@ -54,7 +54,7 @@ public class ContextHandlerTest {
         props.put("user", "user");
         props.put("password", "password");
 
-        final Object buildedObject = new ObjectFactory().build(props);
+        final Object buildedObject = new DefaultObjectFactory().build(props);
 
         ContextHandler contextHandler = new ContextHandler(new CustomMap());
 
@@ -72,7 +72,7 @@ public class ContextHandlerTest {
         props.put("user", "user");
         props.put("password", "password");
 
-        final Object buildedObject = new ObjectFactory().build(props);
+        final Object buildedObject = new DefaultObjectFactory().build(props);
 
         ContextHandler contextHandler = new ContextHandler(new CustomMap());
 
@@ -93,7 +93,7 @@ public class ContextHandlerTest {
         props.put("user", "user");
         props.put("password", "password");
 
-        final Object buildedObject = new ObjectFactory().build(props);
+        final Object buildedObject = new DefaultObjectFactory().build(props);
 
         ContextHandler contextHandler = new ContextHandler(new CustomMap());
         String name = "jdbc:/java/comp/env/myDatasource";
