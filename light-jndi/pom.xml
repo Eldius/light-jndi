@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-	<groupId>net.eldiosantos.tools</groupId>
+	<groupId>net.eldiosantos.jndi</groupId>
 	<artifactId>light-jndi-project</artifactId>
 	<version>0.0.2-SNAPSHOT</version>
   </parent>
