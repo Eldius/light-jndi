@@ -1,29 +1,55 @@
-# README #
+# light-jndi #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+An alternate to use JNDI without a container.
 
-### What is this repository for? ###
+The idea was to use Hibernate with a datasource runnung in a Spark REST application.
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+### Configuration ###
 
-### How do I get set up? ###
+There are 3 example projects and each one shows a diferent  way to configure.
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+* light-jndi-test
+-- A simple configuration pointing the root folder outside the jar file.
 
-### Contribution guidelines ###
+* light-jndi-embedded-test
+-- A simple configuration pointing the root folder inside the jar file.
 
-* Writing tests
-* Code review
-* Other guidelines
+* light-jndi-customfactory-test
+-- A more complex example defining a custom ObjectFactory (a class to create one type of object).
 
-### Who do I talk to? ###
+### Configuration fields (jndi.properties) ###
+* net.eldiosantos.jndi.root: The root folder where to find the properties files with the context configuration.
+* java.naming.factory.initial: The conetxt factory used by the JVM (this property is used by the JVM to define what class will be responsible for build the JNDI context).
+  The value of this property is 'net.eldiosantos.tools.context.CustomContextFactory'.
+* net.eldiosantos.jndi.factories: Comma separated names of the custom ObjectFactorys you need. It's an optional property.
 
-* Repo owner or admin
-* Other community or team contact
+### JNDI object configuration ###
+  You will need to add a file inside the root folder to define the objects and their 'names'. For example:
+
+        jdbc:/java/comp/env/MyDatasource.class=javax.sql.Datasource
+        jdbc:/java/comp/env/MyDatasource.driver=org.h2.Driver
+        jdbc:/java/comp/env/MyDatasource.url=jdbc:h2:./target/database.db
+        jdbc:/java/comp/env/MyDatasource.user=database_user
+        jdbc:/java/comp/env/MyDatasource.password=database_password
+
+  Here you will have a datasource located at 'jdbc:/java/comp/env/MyDatasource'.
+
+You can add any object in the context. You just need to define the name and the object attributes.
+If you want to add an instance of a custom object (net.eldiosantos.exemple.Developer) at 'java:/context/myObject' with attributes
+ 'name' and 'wantABeer' as 'Eldius' and 'Y' you will need to define this way.
+
+        java:/context/myObject.class=net.eldiosantos.exemple.Developer
+        java:/context/myObject.name=Eldius
+        java:/context/myObject.wantABeer=Y
+
+
+Add as a Maven dependency:
+
+        	<dependency>
+                <groupId>net.eldiosantos.jndi</groupId>
+                <artifactId>light-jndi-project</artifactId>
+                <version>0.0.2</version>
+        	</dependency>
+
+
+
