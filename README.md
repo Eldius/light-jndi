@@ -51,5 +51,6 @@ Add as a Maven dependency:
                 <version>0.0.2</version>
         	</dependency>
 
-
+### TODO list ###
+  Try to lower the memmory usage on the startup.
 
