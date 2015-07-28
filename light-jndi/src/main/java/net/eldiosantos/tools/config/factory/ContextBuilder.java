@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -27,14 +28,26 @@ public class ContextBuilder {
 
     public ContextHandler build() throws Exception {
 
-        final Map environment = System.getenv();
         Properties properties = new Properties();
         properties.load(getClass().getClassLoader().getResourceAsStream("jndi.properties"));
 
-        System.getProperties().putAll(properties);
+        final ContextHandler contextHandler = new ContextHandler(new CustomMap());
+        final Map<String, Map<String, String>> groupedMaps = new GroupProperties().group(
+                loadPropertiesMapping(
+                        properties
+                        , new RootConfigPath(properties.getProperty(PropertyKeys.ROOT_PATH)).getFiles()
+                ).entrySet()
+        );
 
-        final File[] factoryFiles = new RootConfigPath(properties.getProperty(PropertyKeys.ROOT_PATH)).getFiles();
+        loadFactoryList(properties.getProperty(PropertyKeys.CUSTOM_FACTORIES));
+        for(Map.Entry<String, Map<String, String>>objProps: groupedMaps.entrySet()) {
+            contextHandler.bind(objProps.getKey(), getFactory(objProps.getValue()).build(objProps.getValue()));
+        }
 
+        return contextHandler;
+    }
+
+    private Map<String, String> loadPropertiesMapping(Properties properties, File[] factoryFiles) throws IOException {
         logger.info(String.format("Loading %d files from %s", factoryFiles.length, properties.getProperty(PropertyKeys.ROOT_PATH)));
         final Map<String, String>configurationProperties = new HashMap<>();
         final PropertiesFileLoader propertiesFileLoader = new PropertiesFileLoader();
@@ -42,25 +55,7 @@ public class ContextBuilder {
             logger.debug(String.format("Loading file %s", cfg.getName()));
             configurationProperties.putAll(propertiesFileLoader.loadFile(cfg));
         }
-
-        logger.debug("Properties:");
-        for (Map.Entry<String, String>entry:configurationProperties.entrySet()) {
-            logger.debug(String.format("Property: '%s' => '%s'", entry.getKey(), entry.getValue()));
-        }
-
-        final ContextHandler contextHandler = new ContextHandler(new CustomMap());
-        final Map<String, Map<String, String>> groupedMaps = new GroupProperties().group(configurationProperties.entrySet());
-        final DefaultObjectFactory objectFactory = new DefaultObjectFactory();
-        logger.debug("grouped props: \n" + groupedMaps.toString());
-        StringBuffer msg = new StringBuffer("Properties:\n");
-        loadFactoryList(properties.getProperty(PropertyKeys.CUSTOM_FACTORIES));
-        for(Map.Entry<String, Map<String, String>>objProps: groupedMaps.entrySet()) {
-            contextHandler.bind(objProps.getKey(), getFactory(objProps.getValue()).build(objProps.getValue()));
-        }
-
-        logger.debug(msg.toString());
-
-        return contextHandler;
+        return configurationProperties;
     }
 
     private void loadFactoryList(final String classNames) throws Exception {
