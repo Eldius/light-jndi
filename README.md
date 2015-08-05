@@ -1,5 +1,7 @@
 # light-jndi #
 
+[![Build Status](https://travis-ci.org/Eldius/light-jndi.svg?branch=light-jndi-project-0.0.2)](https://travis-ci.org/Eldius/light-jndi)
+
 An alternate to use JNDI without a container.
 
 The idea was to use Hibernate with a datasource runnung in a Spark REST application.
