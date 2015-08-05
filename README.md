@@ -1,6 +1,6 @@
 # light-jndi #
 
-[![Build Status](https://travis-ci.org/Eldius/light-jndi.svg?branch=light-jndi-project-0.0.2)](https://travis-ci.org/Eldius/light-jndi)
+[![Build Status](https://travis-ci.org/Eldius/light-jndi.svg?branch=master)](https://travis-ci.org/Eldius/light-jndi)
 
 An alternate to use JNDI without a container.
 
