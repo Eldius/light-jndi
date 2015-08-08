@@ -1,20 +1,16 @@
 package net.eldiosantos.tools.config.factory;
 
-import net.eldiosantos.tools.config.factory.helper.GroupProperties;
 import net.eldiosantos.tools.config.factory.helper.ObjectFactoryLoader;
 import net.eldiosantos.tools.config.factory.impl.DatasourceObjectFactory;
 import net.eldiosantos.tools.config.factory.impl.DefaultObjectFactory;
-import net.eldiosantos.tools.config.factory.loader.PropertiesFileLoader;
 import net.eldiosantos.tools.constants.PropertyKeys;
 import net.eldiosantos.tools.context.ContextHandler;
 import net.eldiosantos.tools.context.RootConfigPath;
 import net.eldiosantos.tools.custom.CustomMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * The main class of this project. It's responsible to
@@ -23,7 +19,6 @@ import java.util.*;
  */
 public class ContextBuilder {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
     private List<ObjectFactory>factoryList;
 
     public ContextHandler build() throws Exception {
@@ -32,44 +27,68 @@ public class ContextBuilder {
         properties.load(getClass().getClassLoader().getResourceAsStream("jndi.properties"));
 
         final ContextHandler contextHandler = new ContextHandler(new CustomMap());
-        final Map<String, Map<String, String>> groupedMaps = new GroupProperties().group(
-                loadPropertiesMapping(
-                        properties
-                        , new RootConfigPath(properties.getProperty(PropertyKeys.ROOT_PATH)).getFiles()
-                ).entrySet()
-        );
 
-        loadFactoryList(properties.getProperty(PropertyKeys.CUSTOM_FACTORIES));
-        for(Map.Entry<String, Map<String, String>>objProps: groupedMaps.entrySet()) {
-            contextHandler.bind(objProps.getKey(), getFactory(objProps.getValue()).build(objProps.getValue()));
-        }
+        final Map<String, String>propertiesMap = Arrays.asList(
+                new RootConfigPath(properties.getProperty(PropertyKeys.ROOT_PATH)).getFiles()
+        ).parallelStream()
+                .flatMap(f -> {
+                    try {
+                        return new BufferedReader(new FileReader(f)).lines();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                })
+                .filter(l-> !l.isEmpty())
+                .map(l->Arrays.asList(l.split("=")))
+                .collect(Collectors.toConcurrentMap((List<String> l) -> l.get(0).trim(), (List<String> l) -> l.get(1).trim()));
+
+        final Map<String, Map<String, String>> groupedMaps = new HashMap<>();
+
+        propertiesMap.entrySet().stream()
+                .map(e->{
+                    final List<String>result = new ArrayList<>();
+                    final int lastDotIndex = e.getKey().lastIndexOf(".");
+                    result.add(e.getKey().substring(0, lastDotIndex)); // path and object
+                    result.add(e.getKey().substring(lastDotIndex)); // property name
+                    result.add(e.getValue()); // property value
+
+                    return result;
+                }).forEachOrdered(l -> {
+            final String objKey = l.get(0);
+            Map<String, String> tmpMap = groupedMaps.get(objKey);
+            if (tmpMap == null) {
+                tmpMap = new HashMap<>();
+            }
+            tmpMap.put(l.get(1), l.get(2));
+            groupedMaps.put(objKey, tmpMap);
+        });
+
+        factoryList = loadFactoryList(properties.getProperty(PropertyKeys.CUSTOM_FACTORIES));
+        groupedMaps.entrySet()
+                .parallelStream()
+                .forEach(objProps -> {
+                    try {
+                        contextHandler.bind(objProps.getKey(), getFactory(objProps.getValue()).build(objProps.getValue()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
 
         return contextHandler;
     }
 
-    private Map<String, String> loadPropertiesMapping(Properties properties, File[] factoryFiles) throws IOException {
-        logger.info(String.format("Loading %d files from %s", factoryFiles.length, properties.getProperty(PropertyKeys.ROOT_PATH)));
-        final Map<String, String>configurationProperties = new HashMap<>();
-        final PropertiesFileLoader propertiesFileLoader = new PropertiesFileLoader();
-        for(File cfg: factoryFiles) {
-            logger.debug(String.format("Loading file %s", cfg.getName()));
-            configurationProperties.putAll(propertiesFileLoader.loadFile(cfg));
-        }
-        return configurationProperties;
-    }
-
-    private void loadFactoryList(final String classNames) throws Exception {
-        this.factoryList = new ObjectFactoryLoader().loadFactories(classNames);
-        this.factoryList.add(new DatasourceObjectFactory());
-        this.factoryList.add(new DefaultObjectFactory());
+    private List<ObjectFactory> loadFactoryList(final String classNames) throws Exception {
+        List<ObjectFactory> factoryList = new ObjectFactoryLoader().loadFactories(classNames);
+        factoryList.add(new DatasourceObjectFactory());
+        factoryList.add(new DefaultObjectFactory());
+        return factoryList;
     }
 
     private ObjectFactory getFactory(final Map<String, String> objectProperties) {
-        for(ObjectFactory factory: this.factoryList) {
-            if(factory.canBuild(objectProperties.get("class"))) {
-                return factory;
-            }
-        }
-        return null;
+        return this.factoryList.stream()
+                .findFirst()
+                .filter(factory->factory.canBuild(objectProperties.get("class")))
+                .get();
     }
 }
