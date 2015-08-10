@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -20,31 +21,37 @@ public class JarExtractor {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public String extract(final File jarFile, final String root) throws Exception {
+
+        logger.debug(String.format("config path: %s", root));
+
         final JarFile jar = new JarFile(jarFile.getAbsoluteFile());
         final File tempDir = new File(File.createTempFile("context", "tmp").getParent() + File.separator + "context");
         tempDir.mkdirs();
         cleanDir(tempDir);
 
-        final Enumeration<JarEntry> entries = jar.entries();
-        while (entries.hasMoreElements()) {
-            final JarEntry entry = entries.nextElement();
-            if(entry.getName().startsWith(root)) {
-                logger.info(String.format("Extracting file %s", entry.getName()));
-                final File dest = new File(tempDir.getPath() + File.separator + entry.getName());
-                if(entry.isDirectory()) {
-                    dest.mkdirs();
-                } else {
-                    final InputStream in = jar.getInputStream(entry);
-                    final OutputStream out = new FileOutputStream(dest);
+        Collections.list(jar.entries()).stream()
+                .peek(j -> logger.debug(String.format("jar file [after]: %s", j.getName())))
+                .filter(e -> e.getName().startsWith(root))
+                .peek(j -> logger.debug(String.format("jar file [before]: %s", j.getName())))
+                .forEach(e->{
+                    final File dest = new File(tempDir.getPath() + File.separator + e.getName());
+                    if(e.isDirectory()) {
+                        dest.mkdirs();
+                    } else {
+                        try {
+                            final InputStream in = jar.getInputStream(e);
+                            final OutputStream out = new FileOutputStream(dest);
 
-                    while (in.available() > 0) {
-                        out.write(in.read());
+                            while (in.available() > 0) {
+                                out.write(in.read());
+                            }
+                            out.close();
+                            in.close();
+                        } catch (Exception ex) {
+                            logger.error("Error extracting config files.", ex);
+                        }
                     }
-                    out.close();
-                    in.close();
-                }
-            }
-        }
+                });
 
         return tempDir.getAbsolutePath() + File.separator + root;
 

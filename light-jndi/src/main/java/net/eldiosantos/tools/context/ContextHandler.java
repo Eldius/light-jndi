@@ -27,18 +27,28 @@ public class ContextHandler {
     }
 
     private Object lookup(final String name, final Map<?,?> map) throws NameNotFoundException {
-        final String[] split = name.split("/");
-        if(split.length > 1) {
-            return lookup(name.substring(split[0].length() + 1), (Map<?, ?>) map.get(split[0]));
-        } else {
-            final Object result = map.get(name);
-            if (result instanceof CustomMap) {
-                return new CustomContext(new ContextHandler((CustomMap)result));
+
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("lookup for '%s' at %s", name, map));
+        }
+
+        try {
+            final String[] split = name.split("/");
+            if (split.length > 1) {
+                return lookup(name.substring(split[0].length() + 1), (Map<?, ?>) map.get(split[0]));
+            } else {
+                final Object result = map.get(name);
+                if (result instanceof CustomMap) {
+                    return new CustomContext(new ContextHandler((CustomMap) result));
+                }
+                if (result == null) {
+                    throw new NameNotFoundException(String.format("Name '%s' not found", name));
+                }
+                return result;
             }
-            if(result == null) {
-                throw new NameNotFoundException(String.format("Name '%s' not found", name));
-            }
-            return result;
+        } catch (Exception e) {
+            logger.error(String.format("Error trying to lookup for %s", name), e);
+            throw new NameNotFoundException(String.format("Name '%s' not found", name));
         }
     }
 

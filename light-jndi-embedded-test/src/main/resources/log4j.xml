@@ -10,37 +10,13 @@
     </appender>
 
     <appender name="file" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="logs/applicationLogger.log"/>
+        <param name="File" value="target/applicationLogger.log"/>
         <param name="MaxFileSize" value="2MB"/>
         <param name="MaxBackupIndex" value="3"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{HH:mm:ss,SSS} %5p [%-20c{1}] %m%n"/>
         </layout>
     </appender>
-
-    <appender name="hibernate" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="logs/hibernateLogger.log"/>
-        <param name="MaxFileSize" value="2MB"/>
-        <param name="MaxBackupIndex" value="3"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{HH:mm:ss,SSS} %5p [%-20c{1}] %m%n"/>
-        </layout>
-    </appender>
-
-    <category name="org.hibernate.sql">
-        <priority value="trace"/>
-        <appender-ref ref="hibernate"/>
-    </category>
-
-    <category name="org.hibernate.type">
-        <priority value="trace"/>
-        <appender-ref ref="hibernate"/>
-    </category>
-
-    <category name="org.hibernate">
-        <priority value="trace"/>
-        <appender-ref ref="hibernate"/>
-    </category>
 
     <root>
         <priority value="debug"/>

@@ -3,10 +3,14 @@ package net.eldiosantos.tools.config.factory;
 import net.eldiosantos.tools.config.factory.helper.ObjectFactoryLoader;
 import net.eldiosantos.tools.config.factory.impl.DatasourceObjectFactory;
 import net.eldiosantos.tools.config.factory.impl.DefaultObjectFactory;
+import net.eldiosantos.tools.config.helper.GroupProperties;
+import net.eldiosantos.tools.config.helper.PropertiesLoader;
 import net.eldiosantos.tools.constants.PropertyKeys;
 import net.eldiosantos.tools.context.ContextHandler;
 import net.eldiosantos.tools.context.RootConfigPath;
 import net.eldiosantos.tools.custom.CustomMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
@@ -19,6 +23,8 @@ import java.util.stream.Collectors;
  */
 public class ContextBuilder {
 
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
     private List<ObjectFactory>factoryList;
 
     public ContextHandler build() throws Exception {
@@ -28,45 +34,11 @@ public class ContextBuilder {
 
         final ContextHandler contextHandler = new ContextHandler(new CustomMap());
 
-        final Map<String, String>propertiesMap = Arrays.asList(
-                new RootConfigPath(properties.getProperty(PropertyKeys.ROOT_PATH)).getFiles()
-        ).parallelStream()
-                .flatMap(f -> {
-                    try {
-                        return new BufferedReader(new FileReader(f)).lines();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                })
-                .filter(l-> !l.isEmpty())
-                .map(l->Arrays.asList(l.split("=")))
-                .collect(Collectors.toConcurrentMap((List<String> l) -> l.get(0).trim(), (List<String> l) -> l.get(1).trim()));
-
-        final Map<String, Map<String, String>> groupedMaps = new HashMap<>();
-
-        propertiesMap.entrySet().stream()
-                .map(e->{
-                    final List<String>result = new ArrayList<>();
-                    final int lastDotIndex = e.getKey().lastIndexOf(".");
-                    result.add(e.getKey().substring(0, lastDotIndex)); // path and object
-                    result.add(e.getKey().substring(lastDotIndex)); // property name
-                    result.add(e.getValue()); // property value
-
-                    return result;
-                }).forEachOrdered(l -> {
-            final String objKey = l.get(0);
-            Map<String, String> tmpMap = groupedMaps.get(objKey);
-            if (tmpMap == null) {
-                tmpMap = new HashMap<>();
-            }
-            tmpMap.put(l.get(1), l.get(2));
-            groupedMaps.put(objKey, tmpMap);
-        });
-
-        factoryList = loadFactoryList(properties.getProperty(PropertyKeys.CUSTOM_FACTORIES));
-        groupedMaps.entrySet()
-                .parallelStream()
+        // Creating objects
+        factoryList = loadFactoryList(properties.getProperty(PropertyKeys.CUSTOM_FACTORIES, ""));
+        new GroupProperties().group(new PropertiesLoader().load(properties)).entrySet()
+                .stream()
+                .peek(m->logger.debug(String.format("object: %s", m)))
                 .forEach(objProps -> {
                     try {
                         contextHandler.bind(objProps.getKey(), getFactory(objProps.getValue()).build(objProps.getValue()));
